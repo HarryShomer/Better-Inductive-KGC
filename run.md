@@ -108,7 +108,7 @@ dataset:
 
 In the paper, we evaluate ULTRA under the 0-shot setting. Therefore, no training or fine-tuning is required. 
 
-By default, ULTRA comes with several pre-trained models that were trained on multiple transductive datasets. However, since we generated new inductive datasets from some of those transductive datasets used (e.g., FB15k-237) there was the potential of test leakage. To account for this we trained our own verison of ULTRA that didn't include that dataset (when applicable). We found that this had a modest but negative impact on performance (see our paper for more details). These checkpoints are included in our repo.
+By default, ULTRA comes with several pre-trained models that were trained on multiple transductive datasets. However, since we generated new inductive datasets from some of those transductive datasets used (e.g., FB15k-237) there is the potential of test leakage. To account for this, we trained our own verison of ULTRA that didn't include that specific dataset (when applicable). We found that this had a modest but negative impact on performance (see our paper for more details). These checkpoints are included in our repo.
 
 ULTRA can be run with the following where the potential values of `CKPT` can be found in `src/ULTRA/ckpts/`.
 ```
