@@ -31,14 +31,16 @@ conda env create -f envs/std_env.yml
 conda activate std_env
 ```
 
-## 2. Setup Code and Packages for Rest of Experiments
+## 3. Setup Code and Packages for Rest of Experiments
 
-ULTRA and Nodepiece require different environments. We note that the only difference from the previous section is the python version and the package versions.
+ULTRA and Nodepiece require different environments.
 
-Nodepiece requires python 3.8.19. The full package requirements can be found in `nodepiece_env.yaml`.
+Nodepiece requires python `3.8.19`. The full package requirements can be found in `nodepiece_env.yaml`.
 
-ULTRA requires python 3.9.19. The full package requirements can be found in `ultra_env.yaml`.
+ULTRA requires python `3.9.19`. The full package requirements can be found in `ultra_env.yaml`.
 
-These environments can be set up as detailed in the previous section.
+These environments can be set up as shown in the previous section.
 
-We note that the correct CUDA version can be installed multiple ways. For manual installation, please see [here](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html). On a HPCC system, the correct version can be ativated via SLURM. Please see [here](https://hpcf.umbc.edu/gpu/how-to-run-on-the-gpus/) for more details.
+## 4. CUDA (optional)
+
+Lastly, we note that the correct CUDA version can be installed multiple ways. For manual installation, please see [here](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html). On a HPCC system, the correct version can be ativated via SLURM. Please see [here](https://hpcf.umbc.edu/gpu/how-to-run-on-the-gpus/) for more details.
