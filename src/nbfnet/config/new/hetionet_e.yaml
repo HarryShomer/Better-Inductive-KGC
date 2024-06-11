@@ -1,0 +1,34 @@
+output_dir: ~/experiments/new/
+
+dataset:
+  class: hetionet_E
+  root: ~/kg_ppr/new_data/
+  new: yes
+  num_test: 2
+
+model:
+  class: NBFNet
+  input_dim: 32
+  hidden_dims: [32, 32, 32, 32, 32, 32]
+  message_func: distmult
+  aggregate_func: pna
+  short_cut: yes
+  layer_norm: yes
+  dependent: no
+  remove_one_hop: no
+
+task:
+  num_negative: 32
+  strict_negative: yes
+  adversarial_temperature: 0.5
+  metric: [mr, mrr, hits@1, hits@3, hits@10]
+
+optimizer:
+  class: Adam
+  lr: 5.0e-3
+
+train:
+  gpus: {{ gpus }}
+  batch_size: 64
+  num_epoch: 20
+  log_interval: 100
