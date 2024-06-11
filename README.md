@@ -1,11 +1,11 @@
-# HeaRT
+# Better Inductive KGC Datasets
 
 Official code for the paper ["Towards Better Benchmark Datasets for Inductive Knowledge Graph Completion"]().
 
 
 ## Installation
 
-Please see the [install.md](./install.md) for how to install the proper requirements. 
+Please see the [install.md](./install.md) for how to install the code and proper requirements. 
 
 
 ## Data

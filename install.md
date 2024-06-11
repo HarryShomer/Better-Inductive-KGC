@@ -19,7 +19,7 @@ The system and CUDA version used for the majority of experiments are:
 We first clone the repository.
 ```
 git clone git@github.com:HarryShomer/KGC-Inductive-PPR.git
-cd KGC-Inductive-PPR/
+cd Better-Inductive-KGC/
 ```
 
 The package requirements can be found in the `envs/std_env.yml` file. Installing this will also create an environment for the project, `std_env`. 
