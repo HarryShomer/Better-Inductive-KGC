@@ -17,6 +17,8 @@ data/
 *.png
 *.pt
 *tune.sh
+analyze_existing_data.py
+analyze_synth_data.py
 
 
 # Byte-compiled / optimized / DLL files

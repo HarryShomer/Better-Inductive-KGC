@@ -13,7 +13,7 @@ cd scripts
 bash ppr_run.sh 3  # Run with GPU 3
 ```
 
-You can run it youself with the following where you must replace `DEVICE` with the integer GPU device being used.
+You can run it youself with the following, where you must replace `DEVICE` with the integer GPU device being used.
 ```
 cd ../src/nbfnet
 python run_ppr.py -c config/new/wn18rr_e.yaml --gpus [DEVICE]
@@ -21,7 +21,7 @@ python run_ppr.py -c config/new/wn18rr_e.yaml --gpus [DEVICE]
 
 ## NodePiece
 
-**NOTE**: NodePiece requires a specific environment (see [install.md](./install.md)) to run correctly.
+**NOTE**: NodePiece requires a specific environment to run correctly (see [install.md](./install.md)).
 
 It can be run by the following where `<>` denotes a value that must be specified:
 ```
@@ -53,6 +53,8 @@ To replicate the exact trained models:
 - HetioNet (E): `bash ingram_run.sh hetionet_E 5e-4 4 <DEVICE>`
 - FB15k-237 (E, R): `bash ingram_run.sh fb15k-237_ER 1e-3 2 <DEVICE>`
 - CoDEx-M (E, R): `bash ingram_run.sh codex_m_ER 5e-4 2 <DEVICE>`
+
+All trained models are saved upon completion.
 
 To test each method, you must pass the same hyperparameters used for training, with an additional parameter for the \# of inference graphs.
 ```
@@ -86,7 +88,7 @@ To replicate the test results:
 
 NBFNet differs from the others as the optimal hyperparameters reside in the config files located in the `src/nbfnet/config` directory. We note that this organization follows the same structure as their original implementation. 
 
-To replicate the test results run the following. Note that the dataset here must match the corresponding name of the file in `src/nbfnet/config/new` for that dataset.
+To replicate the results, please run the following. Note that the dataset here must match the corresponding name of it's config file in `src/nbfnet/config/new/`:
 - WN18RR (E): `bash nbfnet_run.sh wn18rr_e <DEVICE> <SAVE_AS>`
 - CoDEx-M (E): `bash nbfnet_run.sh codex_m_e <DEVICE> <SAVE_AS>`
 - HetioNet (E): `bash nbfnet_run.sh hetionet_e <DEVICE> <SAVE_AS>`
@@ -104,11 +106,11 @@ dataset:
 
 ## ULTRA
 
-**NOTE**: ULTRA requires a specific environment (see [install.md](./install.md)) to run correctly.
+**NOTE**: ULTRA requires a specific environment to run correctly (see [install.md](./install.md)).
 
 In the paper, we evaluate ULTRA under the 0-shot setting. Therefore, no training or fine-tuning is required. 
 
-By default, ULTRA comes with several pre-trained models that were trained on multiple transductive datasets. However, since we generated new inductive datasets from some of those transductive datasets used (e.g., FB15k-237) there is the potential of test leakage. To account for this, we trained our own verison of ULTRA that didn't include that specific dataset (when applicable). We found that this had a modest but negative impact on performance (see our paper for more details). These checkpoints are included in our repo.
+By default, ULTRA comes with several pre-trained models that were trained on multiple transductive datasets. However, since we generated new inductive datasets from some of those transductive datasets used (e.g., FB15k-237) there is the potential of test leakage. To account for this, we trained our own verison of ULTRA that didn't include that specific dataset (when applicable). We found that this had a modest but negative impact on performance (see Appendix E in our paper for more details). These checkpoints are included in our repo.
 
 ULTRA can be run with the following where the potential values of `CKPT` can be found in `src/ULTRA/ckpts/`.
 ```

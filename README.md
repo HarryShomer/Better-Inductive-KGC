@@ -5,7 +5,7 @@ Official code for the paper ["Towards Better Benchmark Datasets for Inductive Kn
 
 ## Installation
 
-Please see the [install.md](./install.md) for how to install the code and proper requirements. 
+Please see the [install.md](./install.md) for how to install the code and the proper package requirements. We note that some methods, like ULTRA and NodePiece, require their own special environment.
 
 
 ## Data

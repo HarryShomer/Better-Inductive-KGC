@@ -18,11 +18,11 @@ The system and CUDA version used for the majority of experiments are:
 
 We first clone the repository.
 ```
-git clone git@github.com:HarryShomer/KGC-Inductive-PPR.git
+git clone git@github.com:HarryShomer/Better-Inductive-KGC.git
 cd Better-Inductive-KGC/
 ```
 
-The package requirements can be found in the `envs/std_env.yml` file. Installing this will also create an environment for the project, `std_env`. 
+The package requirements can be found in the `envs/std_env.yml` file. Installing this will also create an environment for the project called `std_env`. 
 ```
 # Install environment requirements
 conda env create -f envs/std_env.yml   
@@ -39,7 +39,7 @@ Nodepiece requires python `3.8.19`. The full package requirements can be found i
 
 ULTRA requires python `3.9.19`. The full package requirements can be found in `ultra_env.yaml`.
 
-These environments can be set up as shown in the previous section.
+These environments can be set up in the same manner as before.
 
 ## 4. CUDA (optional)
 
