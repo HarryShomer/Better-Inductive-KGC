@@ -19,7 +19,7 @@ data/
 *tune.sh
 analyze_existing_data.py
 analyze_synth_data.py
-
+gen_croissant.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

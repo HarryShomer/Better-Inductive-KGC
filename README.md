@@ -1,6 +1,6 @@
 # Better Inductive KGC Datasets
 
-Official code for the paper ["Towards Better Benchmark Datasets for Inductive Knowledge Graph Completion"]().
+Official code for the paper ["Towards Better Benchmark Datasets for Inductive Knowledge Graph Completion"](https://arxiv.org/abs/2406.11898).
 
 
 ## Installation
@@ -35,4 +35,11 @@ Please see the [generate_new.md](./generate_new.md) for how to regenerate the ne
 
 ## Cite
 
-
+```
+@article{shomer2024ppr,
+      title={Towards Better Benchmark Datasets for Inductive Knowledge Graph Completion}, 
+      author={Harry Shomer and Jay Revolinsky and Jiliang Tang},
+      journal={arXiv preprint arXiv:2406.11898},
+      year={2024}
+}
+```

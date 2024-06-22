@@ -20,21 +20,21 @@ def make_mean_pos_neg_sp():
     data = {
         "FB15k-237": {
             "Transductive": [2.26, 2.72],
-            "GraIL v1": [3.08, 5.72],
-            "GraIL v2": [2.43, 5.24],
-            "GraIL v3": [2.34, 4.63],
-            "GraIL v4": [2.24, 4.19],
-            "InGram-100": [2.64, 3.96], 
-            "InGram-75": [2.47, 3.53], 
-            "InGram-50": [2.54, 3.57], 
-            "InGram-25": [2.24, 3.37], 
+            "FB v1": [3.08, 5.72],
+            "FB v2": [2.43, 5.24],
+            "FB v3": [2.34, 4.63],
+            "FB v4": [2.24, 4.19],
+            "FB-100": [2.64, 3.96], 
+            "FB-75": [2.47, 3.53], 
+            "FB-50": [2.54, 3.57], 
+            "FB-25": [2.24, 3.37], 
         },
         "WN18RR": {
             "Transductive": [3.4, 7.53],
-            "GraIL v1": [2.53, 9.19],
-            "GraIL v2": [2.85, 9.89],
-            "GraIL v3": [4.29, 9.24],
-            "GraIL v4": [3.17, 9.73],
+            "WN v1": [2.53, 9.19],
+            "WN v2": [2.85, 9.89],
+            "WN v3": [4.29, 9.24],
+            "WN v4": [3.17, 9.73],
         },
     }
 
@@ -57,7 +57,7 @@ def make_mean_pos_neg_sp():
         plt.scatter(np.arange(len(neg_vals) - 1), neg_vals[1:], marker="_", c="tab:orange", 
                     label="Inductive Negative", s=transductive_marker_size, linewidths=2)
 
-        plt.xticks(np.arange(len(datasets[1:])), datasets[1:], fontsize=12, rotation=15) 
+        plt.xticks(np.arange(len(datasets[1:])), datasets[1:], fontsize=15, rotation=15) 
         plt.yticks(fontsize=15) 
         # plt.title(f"{parent_dataset} - Mean SP Distance", fontsize=14)
         # plt.xlabel("Inductive Datasets", fontsize=14)
@@ -339,15 +339,15 @@ def ultra_vs_sota_perf():
 
 
 def main():
-    # make_mean_pos_neg_sp()
+    make_mean_pos_neg_sp()
     # mean_sp_diff_vs_ppr()
 
     # ppr_vs_sota_perf("(E)")
     # ppr_vs_sota_perf("(E, R)")
     # ppr_vs_sota_perf("")
 
-    generated_delta_spd_vs_ppr()
-    generated_ppr_vs_size()
+    # generated_delta_spd_vs_ppr()
+    # generated_ppr_vs_size()
 
     # compare_old_perf()
     # ultra_vs_sota_perf()
