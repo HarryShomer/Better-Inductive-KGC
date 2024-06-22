@@ -1,4 +1,4 @@
-# Generatee New Datasets
+# Generate New Datasets
 
 The set of new inductive datasets that were used in the study, can be reproduced by running the script `scripts/generate_new_splits.sh`. 
 
