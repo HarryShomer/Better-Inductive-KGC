@@ -5,7 +5,7 @@ Official code for the paper ["Towards Better Benchmark Datasets for Inductive Kn
 
 ## Installation
 
-Please see the [install.md](./install.md) for how to install the code and the proper package requirements. We note that some methods, like ULTRA and NodePiece, require their own special environment.
+Please see [install.md](./install.md) for how to install the code and the proper package requirements. We note that some methods, like ULTRA and NodePiece, require their own special environment.
 
 
 ## Data
@@ -25,12 +25,12 @@ df = pd.read_csv("train_graph.txt", header=None, names=["head", "rel", "tail"], 
 
 ## Reproduce Results
 
-Please see the [run.md](./run.md) for how to reproduce the results in the paper. 
+Please see [run.md](./run.md) for how to reproduce the results in the paper. 
 
 
 ## Generate the New Datasets
 
-Please see the [generate_new.md](./generate_new.md) for how to regenerate the new datasets created in the paper. We further give instructions for how to generate your own new inductive datasets.
+Please see [generate_new.md](./generate_new.md) for how to regenerate the new datasets created in the paper. We further give instructions for how to generate your own new inductive datasets.
 
 
 ## Cite
