@@ -300,6 +300,7 @@ def main():
 
     neighbors, neighbor_weights = get_ppr_matrix(edge_index, num_nodes, alpha, eps)
     sparse_adj = create_sparse_ppr_matrix(neighbors, neighbor_weights)
+    
     save_results(dataset, sparse_adj, alpha, eps, val = False)
 
    

@@ -1,0 +1,29 @@
+output_dir: ~/experiments/new/
+
+dataset:
+  class: hetionet_E
+  root: ~/kg_ppr/new_data/
+  new: yes
+  num_test: 2
+
+model:
+  class: NeuralLP
+  hidden_dim: 128
+  num_step: 3
+  num_lstm_layer: 1
+
+task:
+  num_negative: 32
+  strict_negative: yes
+  adversarial_temperature: 0.5
+  metric: [mr, mrr, hits@1, hits@3, hits@10]
+
+optimizer:
+  class: Adam
+  lr: 1.0e-3
+
+train:
+  gpus: {{ gpus }}
+  batch_size: 64
+  num_epoch: 100
+  log_interval: 100

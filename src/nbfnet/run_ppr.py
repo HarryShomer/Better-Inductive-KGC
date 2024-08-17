@@ -167,7 +167,7 @@ if __name__ == "__main__":
     if ddd.startswith("ind") or "ilpc" in ddd or "ingram" in ddd or ddd.startswith("wk"):
         is_inductive = True 
         cfg['dataset_name'] = f"{dataset_name}_{cfg.dataset['version']}"
-    if cfg.dataset.get("new"):
+    elif cfg.dataset.get("new"):
         is_inductive = True 
         cfg['dataset_name'] = dataset_name
         dataset_args = args

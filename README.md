@@ -22,6 +22,7 @@ import pandas as pd
 df = pd.read_csv("train_graph.txt", header=None, names=["head", "rel", "tail"], delimiter=" ")
 ```
 
+For a detailed overview of the dataset, see the [datasheet.md](./datasheet.md) file.
 
 ## Reproduce Results
 

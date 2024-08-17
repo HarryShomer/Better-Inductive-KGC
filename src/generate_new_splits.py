@@ -443,7 +443,6 @@ def main():
     args = parser.parse_args()
 
     utils.init_seed(args.seed)
-    
     get_new_data(args)
 
 

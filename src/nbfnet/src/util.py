@@ -15,6 +15,7 @@ from torch import distributed as dist
 from torch_geometric.data import Data
 
 from src import models, datasets
+from src.neurallp import NeuralLogicProgramming
 
 
 logger = logging.getLogger(__file__)
@@ -154,8 +155,9 @@ def create_working_directory(cfg, args):
 
 def build_dataset(cfg, args=None):
     cls = cfg.dataset.pop("class")
+    is_new = cfg.dataset.get("new", False)
     
-    if args is not None:
+    if is_new:
         dataset = datasets.NewSplit(cfg.dataset.root, cls, num_test=cfg.dataset.num_test)
     elif cls == "FB15k-237":
         dataset = datasets.FB15k237(cfg.dataset.root)
@@ -198,6 +200,8 @@ def build_model(cfg, data, ppr_test=False):
     cls = cfg.model.pop("class")
     if cls == "NBFNet":
         model = models.NBFNet(**cfg.model, ppr_test=ppr_test)
+    elif cls == "NeuralLP":
+        model = NeuralLogicProgramming(**cfg.model)
     else:
         raise ValueError("Invalid Model")
     

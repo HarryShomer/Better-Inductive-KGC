@@ -2,12 +2,10 @@ import copy
 from collections.abc import Sequence
 
 import torch
-from torch import nn, autograd
-
+from torch import nn
 from torch_scatter import scatter_add
+
 from . import tasks, layers
-
-
 
 
 class NBFNet(nn.Module):
