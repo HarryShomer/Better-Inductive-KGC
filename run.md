@@ -36,6 +36,23 @@ To replicate the exact results:
 - FB15k-237 (E, R): `bash nodepiece_run.sh fb15k-237_ER 2 12 15 <DEVICE>`
 - CoDEx-M (E, R): `bash nodepiece_run.sh codex_m_ER 2 4 25 <DEVICE>`
 
+## Neural LP
+
+The code for Neural LP is found in the `nbfnet` directory. We use a modified version of torchdrug implementation of Neural LP (see [here](https://torchdrug.ai/docs/_modules/torchdrug/models/neurallp.html)).
+
+It's can be run via the following:
+```
+cd script
+bash neurallp_run.sh <DATASET> <DEVICE>
+```
+
+To replicate the exact results:
+- WN18RR (E): `bash neurallp_run.sh wn18rr_E <DEVICE>`
+- CoDEx-M (E): `bash neurallp_run.sh codex_m_E  <DEVICE>`
+- HetioNet (E): `bash neurallp_run.sh hetionet_E <DEVICE>`
+- FB15k-237 (E, R): `bash neurallp_run.sh fb15k-237_ER <DEVICE>`
+- CoDEx-M (E, R): `bash neurallp_run.sh codex_m_ER <DEVICE>`
+
 
 ## InGRAM
 

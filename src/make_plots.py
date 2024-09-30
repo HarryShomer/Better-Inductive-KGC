@@ -223,13 +223,14 @@ def generated_delta_spd_vs_ppr():
     ]
     transductive_sp, transdutive_hits = 0.46, 2.7
     
-    marker_size = len(ppr_hits) ** 2
+    ind_marker_size = len(ppr_hits) ** 2
+    tans_marker_size = (len(ppr_hits) + 10) ** 2
 
     fig, ax = plt.subplots()
-    plt.scatter([transductive_sp], [transdutive_hits], marker="^",
-                c="tab:orange", label="Transductive (Original)", s=marker_size)
+    plt.scatter([transductive_sp], [transdutive_hits], marker="*",
+                c="tab:orange", label="Transductive (Original)", s=tans_marker_size)
     plt.scatter(sp_delta, np.array(ppr_hits) * 100, marker="o", 
-                c="tab:blue", label="Inductive (Generated)", s=marker_size)
+                c="tab:blue", label="Inductive (Generated)", s=ind_marker_size)
 
     plt.xticks(fontsize=16) 
     plt.yticks(fontsize=16) 
@@ -264,12 +265,12 @@ def generated_ppr_vs_size():
         47419, 55233
     ]
 
-    marker_size = (len(ppr_hits) + 2) ** 2
+    marker_size = (len(ppr_hits) + 3) ** 2
 
     for dtype, dsize in zip(['train', 'inference'], [train_size, test_size]):
         fig, ax = plt.subplots()
-        color = "blue" if dtype == "train" else "orange"
-        plt.scatter(ppr_hits, dsize, marker="*", c=f"tab:{color}", s=marker_size)
+        color = "green"
+        plt.scatter(ppr_hits, dsize, marker="o", c=f"tab:{color}", s=marker_size)
 
         plt.xticks(fontsize=16) 
         plt.yticks(fontsize=16) 
@@ -338,19 +339,83 @@ def ultra_vs_sota_perf():
     plt.savefig(os.path.join(IMG_DIR, f"ultra_vs_sota_mean.png"), dpi=300, bbox_inches='tight')
 
 
+
+def plot_old_vs_new_metrics(metric):
+    """
+    metric in ['SPD', 'PPR']
+
+    Note that SPD here is \Delta SPD
+    """
+    datasets = ["WN18RR (E)", "CoDEx-M (E)", "HetioNet (E)", "FB15k-237 (E, R)", "CoDEx-M (E, R)"]
+
+    metric = metric.lower()
+    # NOTE: 0=NA
+    if metric == "ppr":
+        old_trans = [46.2, 9.0, 2.4, 2.7, 9.0]
+        old_ind = [66.0, 21.1, 0, 21.4, 0]
+        new_ind = [45.1, 11.2, 2.4, 10.8, 13.2]
+    else: # \Delta SPD
+        old_trans = [4.1, 0.2, 0.6, 0.6, 0.2]
+        old_ind = [6.3, 0.8, 0, 2.4, 0]
+        new_ind = [3.2, 0.2, 0.3, 0.5, 0.4]
+
+    x1 = np.mean(np.array(old_ind) / np.array(old_trans))
+    x2 = np.mean(np.array(new_ind) / np.array(old_trans))
+    print("-->", x1, x2)
+
+    fig, ax = plt.subplots()
+    bar_width = .25
+    index = np.arange(len(datasets))
+    bin_width_mult = len(datasets) / 2 - 1.5
+
+    # marker_size = (len(datasets) + 16) ** 2
+    # plt.scatter(index, old_trans, marker="*", s=marker_size, label="Transductive")
+    # plt.scatter(index, old_ind, marker="*", s=marker_size, label="Old Inductive")
+    # plt.scatter(index, new_ind, marker="*", s=marker_size, label="New Inductive")
+
+    trans_bar = ax.bar(index, old_trans, bar_width, label="Transductive")
+    old_ind_bar = ax.bar(index + bar_width, old_ind, bar_width, label="Old Inductive")
+    new_ind_bar = ax.bar(index + bar_width * 2, new_ind, bar_width, label="New Inductive")
+
+    plt.bar_label(trans_bar,   labels=[f'{x}' for x in old_trans], fontsize=10)
+    # Doesn't exist for some datasets
+    plt.bar_label(old_ind_bar, labels=[f'{x}' if x > 0 else "NA" for x in old_ind], fontsize=10)
+    plt.bar_label(new_ind_bar, labels=[f' {x}' for x in new_ind], fontsize=10)
+
+    if metric == "ppr":
+        metric_name = "PPR Hits@10"
+    else:
+        metric_name = "$\Delta$ SPD"
+
+    plt.xticks(index + bar_width * bin_width_mult, datasets, fontsize=12, rotation=15)
+    # plt.xticks(index, datasets, fontsize=12, rotation=15)
+    plt.yticks(fontsize=16)
+    # plt.xlabel(f"Dataset", fontsize=18)
+    plt.ylabel(f"Mean {metric_name}", fontsize=17)
+    plt.tight_layout()
+    ax.legend(frameon=False, loc='upper center', ncol=3, bbox_to_anchor=(0.5, 1.1), prop = {'size': 14})
+
+    plt.savefig(os.path.join(IMG_DIR, f"old_vs_new_{metric}.png"), dpi=300, bbox_inches='tight')
+
+
+
+
 def main():
-    make_mean_pos_neg_sp()
+    # make_mean_pos_neg_sp()
     # mean_sp_diff_vs_ppr()
 
     # ppr_vs_sota_perf("(E)")
     # ppr_vs_sota_perf("(E, R)")
     # ppr_vs_sota_perf("")
 
-    # generated_delta_spd_vs_ppr()
-    # generated_ppr_vs_size()
+    generated_delta_spd_vs_ppr()
+    generated_ppr_vs_size()
 
     # compare_old_perf()
     # ultra_vs_sota_perf()
+
+    plot_old_vs_new_metrics("PPR")
+    plot_old_vs_new_metrics("SPD")
 
 
     
