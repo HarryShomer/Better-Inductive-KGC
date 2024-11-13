@@ -27,10 +27,10 @@ def build_dataset(dataname, version=None, num_test=1, new=False):
 
     if new:
         root = "~/kg_ppr/new_data/"
-        if dataname.lower().endswith("er"):
-            dataset = nbf_datasets.NewSplit_ER(root, dataname, num_test=num_test)
-        else:
-            dataset = nbf_datasets.NewSplit(root, dataname)
+        dataset = nbf_datasets.NewSplit(root, dataname)
+    elif dataname.lower().startswith("pediatypes") or dataname.lower().startswith("wikitopics"):
+        root = "~/kg_ppr/isdea_data/"
+        dataset = nbf_datasets.ISDEA_Ind_Datasets(name=dataname, root=root, version=version)
     elif dataname == "FB15k-237" and version is None:
         dataset = nbf_datasets.FB15k237(root)
     elif dataname == "WN18RR" and version is None:

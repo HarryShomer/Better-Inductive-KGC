@@ -167,6 +167,9 @@ if __name__ == "__main__":
     if ddd.startswith("ind") or "ilpc" in ddd or "ingram" in ddd or ddd.startswith("wk"):
         is_inductive = True 
         cfg['dataset_name'] = f"{dataset_name}_{cfg.dataset['version']}"
+    elif ddd.startswith("pediatypes") or ddd.startswith("wikitopics"):
+        is_inductive = True 
+        cfg['dataset_name'] = f"{dataset_name}_{cfg.dataset['version']}"
     elif cfg.dataset.get("new"):
         is_inductive = True 
         cfg['dataset_name'] = dataset_name
@@ -188,6 +191,12 @@ if __name__ == "__main__":
         filtered_data = Data(edge_index=dataset.data.target_edge_index, edge_type=dataset.data.target_edge_type)
         filtered_data = filtered_data.to(device)
 
+    # print("\n\n>>>>>>")
+    # print(valid_data.edge_index.shape[-1] // 2, valid_data.target_edge_index.shape[-1], valid_data.num_nodes, valid_data.num_relations // 2)
+    # for i in range(2, len(dataset)):
+    #     print(dataset[i].edge_index.shape[-1] // 2, dataset[i].target_edge_index.shape[-1], dataset[i].num_nodes, dataset[i].num_relations // 2)
+    # exit()
+
     #################################
     if dataset_name.lower().startswith("ind"):
         dataset_name = dataset_name[3:]
@@ -197,8 +206,6 @@ if __name__ == "__main__":
     cfg['is_inductive'] = is_inductive
     #################################
 
-    # logger.warning("Evaluate on valid")
-    # test(cfg, valid_data, filtered_data=filtered_data, is_valid=True)
     logger.warning(separator)
     logger.warning("Evaluate on test")
 

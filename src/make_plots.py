@@ -2,6 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+import matplotlib.ticker as mtick
 
 from utils import *
 
@@ -88,6 +89,10 @@ def mean_sp_diff_vs_ppr():
         "ppr_hits@10": [0.222, 0.219, 0.205, 0.209, 0.158, 0.295, 0.106, 0.232] 
     }
 
+    transductive_data['ppr_hits@10'] = [x * 100 for x in transductive_data['ppr_hits@10']]
+    e_indutive_data['ppr_hits@10'] = [x * 100 for x in e_indutive_data['ppr_hits@10']]
+    er_indutive_data['ppr_hits@10'] = [x * 100 for x in er_indutive_data['ppr_hits@10']]
+
     fig, ax = plt.subplots()
 
     marker_size = 12 ** 2
@@ -125,8 +130,10 @@ def mean_sp_diff_vs_ppr():
 
 def ppr_vs_sota_perf(kgc_task=""):
     """
-    Separate plot for "(E)", "(E, R)", ""
+    Separate plot for "(E)", "(E, R)", "Transductive", "New
     """
+    diff_fontsize=16
+
     # list stores [PPR hits@10, SOTA hits@10]
     if kgc_task == "(E)":
         data = {
@@ -142,6 +149,7 @@ def ppr_vs_sota_perf(kgc_task=""):
             "ILPC-L": [22.5, 14.6],
         }
         plot_title = "(E) Inductive"
+        save_as = "E_"
         offset = 4.5
         rotation = 35
         fontsize=16
@@ -158,11 +166,12 @@ def ppr_vs_sota_perf(kgc_task=""):
             "WK-100": [15.8, 16.9],
         }
         plot_title = "(E, R) Inductive"
+        save_as = "ER_"
         offset = 3.5
         rotation = 30
         fontsize=16
         x_axis, y_axis = 0.02, 0.93
-    else:
+    elif kgc_task == "transductive":
         data = {
             "FB15k-237": [2.7, 66.6],
             "WN18RR": [46.2, 59.9],
@@ -172,11 +181,29 @@ def ppr_vs_sota_perf(kgc_task=""):
             "Hetionet": [2.4, 40.3],
             "DBPedia100k": [30.2, 41.8]
         }
-        plot_title = "Transductive"
+        plot_title = save_as = "Transductive"
         offset = 3
         rotation = 20
         fontsize=14
         x_axis, y_axis = 0.5, 0.9
+    else:
+        data = {
+            "CM (E) 1": [11.2, 43.6],
+            "WN (E) 1": [66.2, 75.5],
+            "WN (E) 2": [24, 29.4],
+            "HN (E) 1": [3.2, 72.8],
+            "HN (E) 2": [2.2, 77.2],
+            "FB (E, R) 1": [9.1, 27.5],
+            "FB (E, R) 2": [12.4, 33.3],
+            "CM (E, R) 1": [10.9, 47.7],
+            "CM (E, R) 2": [15.4, 26.5],
+        }     
+        plot_title = save_as = "New"
+        offset = 4
+        rotation = 35
+        fontsize=14
+        diff_fontsize=14
+        x_axis, y_axis = 0.60, 0.75
 
     fig, ax = plt.subplots()
     bar_width = .3
@@ -188,21 +215,19 @@ def ppr_vs_sota_perf(kgc_task=""):
     mean_perc_diff = np.mean([abs(x[0] - x[1]) / (0.5 * (x[0] + x[1])) for x in list(data.values())]) * 100
 
     ax.bar(index, np.array(ppr_perf), bar_width, label="PPR", color=CB_color_cycle[0])
-    ax.bar(index+bar_width, np.array(sota_perf), bar_width, label="SOTA", color=CB_color_cycle[1])
+    ax.bar(index+bar_width, np.array(sota_perf), bar_width, label="Supervised SOTA", color=CB_color_cycle[1])
 
     textstr=f"Mean % Diff = {mean_perc_diff:.0f}%"
     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
-    ax.text(x_axis, y_axis, textstr, transform=ax.transAxes, fontsize=16, bbox=props)
+    ax.text(x_axis, y_axis, textstr, transform=ax.transAxes, fontsize=diff_fontsize, bbox=props)
 
-    # plt.title(plot_title, fontsize=15)
     plt.xticks(index + bar_width * bin_width_mult, list(data.keys()), fontsize=fontsize, rotation=rotation) 
     plt.yticks(fontsize=20)
-    # plt.xlabel("Dataset", fontsize=16)
     plt.ylabel(f"Hits@10", fontsize=20)
     plt.tight_layout()
-    ax.legend(frameon=False, loc='upper center', ncol=2, bbox_to_anchor=(0.5, 1.14), prop = {'size': 20})
+    ax.legend(frameon=False, loc='upper center', ncol=2, bbox_to_anchor=(0.5, 1.16), prop = {'size': 20})
 
-    plt.savefig(os.path.join(IMG_DIR, f"{plot_title}_ppr_vs_sota.png"), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(IMG_DIR, f"{save_as}_ppr_vs_sota.png"), dpi=300, bbox_inches='tight')
 
 
 def generated_delta_spd_vs_ppr():
@@ -333,7 +358,7 @@ def ultra_vs_sota_perf():
     plt.ylabel(f"Mean Hits@10 ", fontsize=18)
     plt.tight_layout()
     # plt.legend(prop={'size': 16}, loc="upper left")
-    ax.legend(frameon=False, loc='upper center', ncol=2, bbox_to_anchor=(0.5, 1.15), prop = {'size': 16})
+    ax.legend(frameon=False, loc='upper center', ncol=2, bbox_to_anchor=(0.5, 1.15), prop = {'size': 18})
 
     # plt.show()
     plt.savefig(os.path.join(IMG_DIR, f"ultra_vs_sota_mean.png"), dpi=300, bbox_inches='tight')
@@ -398,6 +423,67 @@ def plot_old_vs_new_metrics(metric):
     plt.savefig(os.path.join(IMG_DIR, f"old_vs_new_{metric}.png"), dpi=300, bbox_inches='tight')
 
 
+def parent_vs_ind_ppr_change():
+    """
+    % Increase in PPR Hits@10 from parent-> inductive
+    """
+    data = {
+        "FB (E)": [2.7, 42.7],
+        "FB (E, R)": [2.7, 21.4],
+        "WN": [46.2, 66],
+        "ILPC-S": [9, 19.8],
+        "ILPC-L": [9, 22.5],
+    }     
+
+    rotation = 0
+    fontsize=14
+
+    fig, ax = plt.subplots()
+    bar_width = .3
+    index = np.arange(len(data)) 
+    
+    perc_increase = [(x[1] - x[0]) / x[0] * 100 for x in list(data.values())]
+
+    perc_bar = ax.bar(index, np.array(perc_increase), bar_width, color="dodgerblue")
+
+    plt.bar_label(perc_bar, labels=[f'{int(x)}%' for x in perc_increase], fontsize=12)
+
+    plt.xticks(index, list(data.keys()), fontsize=fontsize, rotation=rotation) 
+    plt.yticks(fontsize=18)
+    plt.ylabel(f"% Increase in PPR Hits@10", fontsize=18)
+    ax.yaxis.set_major_formatter(mtick.PercentFormatter())
+    # ax.legend(frameon=False, loc='upper center', ncol=2, bbox_to_anchor=(0.5, 1.16), prop = {'size': 20})
+    plt.tight_layout()
+
+    plt.savefig(os.path.join(IMG_DIR, f"parent_vs_ind_ppr.png"), dpi=300, bbox_inches='tight') 
+
+
+def plot_rsch_stmt_fig():
+    """
+    For fig in research stmt
+    """
+    x_axis = ['Old Inductive', "Transductive", "New Inductive"]
+    mean_diff = [27, 121, 99]
+
+    fig, ax = plt.subplots()
+    bar_width = .4
+    index = np.arange(len(mean_diff)) 
+
+    colors = ["dodgerblue", "firebrick", "darkviolet"]
+    
+    perc_bar = ax.bar(index, np.array(mean_diff), bar_width, color=colors)
+    plt.bar_label(perc_bar, labels=[f'{int(x)}%' for x in mean_diff], fontsize=18)
+
+    plt.title(f"% Difference between PPR and Neural SOTA Performance", fontsize=18)
+    plt.xticks(index, x_axis, fontsize=18, rotation=5) 
+    plt.yticks(fontsize=18)
+    plt.ylabel("Mean % Difference", fontsize=18)
+    plt.ylim(0, 130)
+    ax.yaxis.set_major_formatter(mtick.PercentFormatter())
+    # ax.legend(frameon=False, loc='upper center', ncol=2, bbox_to_anchor=(0.5, 1.16), prop = {'size': 20})
+    plt.tight_layout()
+
+    plt.savefig(os.path.join(IMG_DIR, f"mean_perc_diff.png"), dpi=300, bbox_inches='tight') 
 
 
 def main():
@@ -406,19 +492,24 @@ def main():
 
     # ppr_vs_sota_perf("(E)")
     # ppr_vs_sota_perf("(E, R)")
-    # ppr_vs_sota_perf("")
+    # ppr_vs_sota_perf("Transductive")
+    # ppr_vs_sota_perf("New")
 
-    generated_delta_spd_vs_ppr()
-    generated_ppr_vs_size()
+    # generated_delta_spd_vs_ppr()
+    # generated_ppr_vs_size()
 
     # compare_old_perf()
     # ultra_vs_sota_perf()
 
-    plot_old_vs_new_metrics("PPR")
-    plot_old_vs_new_metrics("SPD")
+    # plot_old_vs_new_metrics("PPR")
+    # plot_old_vs_new_metrics("SPD")
 
+    # parent_vs_ind_ppr_change()
 
-    
+    plot_rsch_stmt_fig()
+
 
 if __name__ == "__main__":
     main()
+
+

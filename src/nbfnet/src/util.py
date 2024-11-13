@@ -159,6 +159,8 @@ def build_dataset(cfg, args=None):
     
     if is_new:
         dataset = datasets.NewSplit(cfg.dataset.root, cls, num_test=cfg.dataset.num_test)
+    elif cls.lower().startswith("pediatypes") or cls.lower().startswith("wikitopics"):
+        dataset = datasets.ISDEA_Ind_Datasets(name=cls, **cfg.dataset)
     elif cls == "FB15k-237":
         dataset = datasets.FB15k237(cfg.dataset.root)
     elif cls == "WN18RR":

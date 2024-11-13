@@ -21,6 +21,7 @@ analyze_existing_data.py
 analyze_synth_data.py
 gen_croissant.py
 run_degree.py
+isdea_data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
