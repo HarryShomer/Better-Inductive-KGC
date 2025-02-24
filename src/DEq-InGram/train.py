@@ -30,7 +30,7 @@ torch.cuda.empty_cache()
 
 # Initialize Weights & Biases logging, and log the arguments for this run
 run_config = vars(args)
-run_hash = create_hash(str(vars(args)))
+run_hash = f"Seed-{args.seed}"  #create_hash(str(vars(args)))
 run_config["run_hash"] = run_hash
 run_config["stage"] = "fit"
 wandb.init(mode="online" if args.wandb else "disabled",  # Turn on wandb logging only if --wandb is set

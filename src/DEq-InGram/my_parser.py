@@ -6,6 +6,7 @@ def parse(test=False):
     parser.add_argument('--data_path', default = "./data/", type = str)
     parser.add_argument('--data_name', default = 'NL-100', type = str)
     parser.add_argument('--exp', default = 'exp', type = str)
+    parser.add_argument('--inf_graph', default = 0, type = int)
     # Add seed
     parser.add_argument('--seed', default = 0, type = int)
 

@@ -65,8 +65,8 @@ bash ingram_run.sh <DATASET> <LEARNING_RATE> <NUM_ENTITY_LAYERS> <DEVICE>
 ```
 
 To replicate the exact trained models:
-- WN18RR (E): `bash ingram_run.sh wn18rr_E  1e-3 2 <DEVICE>`
-- CoDEx-M (E): `bash ingram_run.sh codex_m_E 5e-4 4 <DEVICE>`
+- WN18RR (E): `bash ingram_run.sh wn18rr_E  5e-4 4 <DEVICE>`
+- CoDEx-M (E): `bash ingram_run.sh codex_m_E 1e-3 2 <DEVICE>`
 - HetioNet (E): `bash ingram_run.sh hetionet_E 5e-4 4 <DEVICE>`
 - FB15k-237 (E, R): `bash ingram_run.sh fb15k-237_ER 1e-3 2 <DEVICE>`
 - CoDEx-M (E, R): `bash ingram_run.sh codex_m_ER 5e-4 2 <DEVICE>`

@@ -48,14 +48,14 @@ if args.alt_test_data != "":
 	path = args.data_path + args.alt_test_data + "/"
 else:
 	path = args.data_path + args.data_name + "/"
-test = TestNewData(path, data_type = "test")
+test = TestNewData(path, data_type = "test", inf_graph=args.inf_graph)
 
 if not args.best:
 	file_format = f"lr_{args.learning_rate}_dim_{args.dimension_entity}_{args.dimension_relation}" + \
 				f"_bin_{args.num_bin}_total_{args.num_epoch}_every_{args.validation_epoch}" + \
 				f"_neg_{args.num_neg}_layer_{args.num_layer_ent}_{args.num_layer_rel}" + \
 				f"_hid_{args.hidden_dimension_ratio_entity}_{args.hidden_dimension_ratio_relation}" + \
-				f"_head_{args.num_head}_margin_{arg.margin}"
+				f"_head_{args.num_head}_margin_{args.margin}"
 
 d_e = args.dimension_entity
 d_r = args.dimension_relation
@@ -102,7 +102,7 @@ test_msg = torch.tensor(test_msg).cuda()
 metrics = evaluate_mc(
 	my_model, test, 
 	test_init_emb_ent_samples, test_init_emb_rel_samples, test_relation_triplets_samples,
-	full_graph_neg = args.full_graph_neg)
+	full_graph_neg = True)
 
 test_end_time = time.time()
 print(f"Test Time: {test_end_time - test_start_time}")

@@ -260,12 +260,6 @@ def load_data_new(name, data_folder, mode="train", inf_graph=1):
 
         msg_data = load_graph(msg_path, entities_dict, relations_dict, "both")
         sup_data = load_graph(sup_path, entities_dict, relations_dict, "supervision")
-
-        # print("\n")
-        # print("-->", (len(msg_data['edge_list_mes']) + len(msg_data['edge_list_sup'])) // 2, msg_data['num_node'], msg_data['num_relation'] // 2)
-        # print("--->", len(sup_data['edge_list']))
-        # print("\n")
-
     else:
         msg_path = os.path.join(data_folder, f"test_{inf_graph-1}_graph.txt")
         sup_path = os.path.join(data_folder, f"test_{inf_graph-1}_samples.txt")

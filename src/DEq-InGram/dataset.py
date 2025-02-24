@@ -15,7 +15,7 @@ class TrainData():
 		self.remaining = []
 		self.ent2id = None
 		self.rel2id = None
-		self.id2ent, self.id2rel, self.triplets = self.read_triplet(path + 'train.txt')
+		self.id2ent, self.id2rel, self.triplets = self.read_triplet(path + 'train_graph.txt')
 		self.num_triplets = len(self.triplets)
 		self.num_ent, self.num_rel = len(self.id2ent), len(self.id2rel)
 		
@@ -100,11 +100,12 @@ class TrainData():
 		return msg, sup
 
 class TestNewData():
-	def __init__(self, path, data_type = "valid"):
+	def __init__(self, path, data_type = "valid", inf_graph=1):
 		self.path = path
 		self.data_type = data_type
 		self.ent2id = None
 		self.rel2id = None
+		self.inf_graph = inf_graph
 		self.id2ent, self.id2rel, self.msg_triplets, self.sup_triplets, self.filter_dict = self.read_triplet()
 		self.num_ent, self.num_rel = len(self.id2ent), len(self.id2rel)
 		
@@ -113,10 +114,16 @@ class TestNewData():
 		id2ent, id2rel, msg_triplets, sup_triplets = [], [], [], []
 		total_triplets = []
 
+		if self.data_type == "valid":
+			msg_file = "train_graph.txt"
+			sup_file = "valid_samples.txt"
+		else:
+			msg_file = f"test_{self.inf_graph}_graph.txt"
+			sup_file = f"test_{self.inf_graph}_samples.txt"
+
 		# If in validation mode, read train.txt as the observation/message set
 		# (instead of msg.txt done in the original code)
 		# Only read in msg.txt if in test mode
-		msg_file = "train.txt" if self.data_type == "valid" else "msg.txt"
 		with open(self.path + msg_file, 'r') as f:
 			for line in f.readlines():
 				h, r, t = line.strip().split()
@@ -134,7 +141,7 @@ class TestNewData():
 		msg_triplets = [(self.ent2id[h], self.rel2id[r], self.ent2id[t]) for h, r, t in msg_triplets]
 		msg_inv_triplets = [(t, r+num_rel, h) for h,r,t in msg_triplets]
 
-		with open(self.path + self.data_type + ".txt", 'r') as f:
+		with open(self.path + sup_file, 'r') as f:
 			for line in f.readlines():
 				h, r, t = line.strip().split()
 				# Check that the head, relation, and tail are mentioned in the message set

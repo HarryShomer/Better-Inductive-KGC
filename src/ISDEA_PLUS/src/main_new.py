@@ -236,9 +236,20 @@ if __name__ == "__main__":
     batchsize = args.batchsize
     negative_tail_train = args.negative_tail_train
     negative_relation_train = args.negative_relation_train
-    # Same as --> args.negative_sampling == "node_full" 
-    negative_relation_eval = 0
-    negative_tail_eval = num_node_inf if do_test else num_node_train
+    if args.negative_sampling == "relation":
+        # result_folder = "result/fast_relation/"
+        negative_relation_eval = 50
+        negative_tail_eval = 0
+    elif args.negative_sampling == "node":
+        # result_folder = "result/fast_node/"
+        negative_relation_eval = 0
+        negative_tail_eval = 50
+    elif args.negative_sampling == "relation_full":
+        negative_relation_eval = num_relation_inf
+        negative_tail_eval = 0
+    elif args.negative_sampling == "node_full":
+        negative_relation_eval = 0
+        negative_tail_eval = num_node_inf if do_test else num_node_train
 
     print("Start negative sampling and preprocessing")
 
@@ -363,18 +374,20 @@ if __name__ == "__main__":
 
     if do_train:
         print("### Start training ###")
-        for i in range(epoch + 1):
+        for i in tqdm(range(epoch + 1), "Training"):
             # Skip first epoch, which is used for validation on the initial model
-            if i > 0:
+            if i >= 0:
                 model.train()
                 random.shuffle(mixed_train_data)
                 epoch_start_time = time.time()
                 step_train_times = []
-                for b in tqdm(mixed_train_data, desc=f"Training at Epoch {i}"):
+                total_loss = 0
+                for b in mixed_train_data:
                     train_batch, chosen_relations, heuristics = b["batch"], b["chosen_relations"], b["heuristics"]
                     step_start_time = time.time()
                     predicted, label = model.train_forward(train_input_relation_feature, train_input_node_feature, adj_train, adjs_train, heuristics, train_batch, chosen_relations, device)
                     loss = loss_fn(predicted, label)
+                    total_loss += loss.item()
                     optimizer.zero_grad()
                     loss.backward()
                     optimizer.step()
@@ -383,13 +396,15 @@ if __name__ == "__main__":
                 step_train_avg_time = sum(step_train_times) / len(step_train_times)
                 epoch_end_time = time.time()
                 epoch_time = epoch_end_time - epoch_start_time
+                
                 time_record = "Train Time " + str(i) + " " + str(epoch_time) + '\n'
-                time_record = f"Train Time {i} {epoch_time}, avg step time: {step_train_avg_time}\n"
+                time_record = f"Train Time {i} {epoch_time}, avg step time: {step_train_avg_time}, loss: {total_loss:.4f}\n"
+                # print(time_record, flush=True)
                 with open(output_file, 'a') as f:
                     f.write(time_record)
 
             # Validation per valid_epoch epochs
-            if i % valid_epoch == 0:
+            if i % valid_epoch == 0 and i != 0:
                 with torch.no_grad():
                     valid_start_time = time.time()
                     model.eval()
@@ -425,7 +440,7 @@ if __name__ == "__main__":
                         break
 
                 # Print validation results to console
-                print(f"Validation results at epoch {i}:")
+                print(f"\nValidation results at epoch {i}:")
                 for k, v in result.items():
                     print(f"{k}: {v}")
                 print("\n")
@@ -435,7 +450,7 @@ if __name__ == "__main__":
 
         if do_test:
             print("### Start testing ###")
-            model = torch.load(best_model_path)
+            model = torch.load(best_model_path).to(device)
             model.eval()
             chosen_relations = [a for a in range(num_relation_inf)]
             node_feature = model.process_node_feature(inf_input_relation_feature, inf_input_node_feature, adj_inf, adjs_inf, chosen_relations, device)
@@ -463,7 +478,7 @@ if __name__ == "__main__":
         print("### Start testing with loaded checkpoint ###")
         best_model_path = os.path.join(args.load_ckpt, "model.pt")
         test_start_time = time.time()
-        model = torch.load(best_model_path)
+        model = torch.load(best_model_path).to(device)
         model.eval()
         chosen_relations = [a for a in range(num_relation_inf)]
         node_feature = model.process_node_feature(inf_input_relation_feature, inf_input_node_feature, adj_inf, adjs_inf, chosen_relations, device)

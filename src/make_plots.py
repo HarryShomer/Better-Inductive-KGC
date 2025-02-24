@@ -193,7 +193,7 @@ def ppr_vs_sota_perf(kgc_task=""):
             "WN (E) 2": [24, 29.4],
             "HN (E) 1": [3.2, 72.8],
             "HN (E) 2": [2.2, 77.2],
-            "FB (E, R) 1": [9.1, 27.5],
+            "FB (E, R) 1": [9.1, 35.4],
             "FB (E, R) 2": [12.4, 33.3],
             "CM (E, R) 1": [10.9, 47.7],
             "CM (E, R) 2": [15.4, 26.5],
@@ -337,7 +337,7 @@ def compare_old_perf():
 
 def ultra_vs_sota_perf():
     datasets = ["CoDEx-M (E)", "WN18RR (E)", "HetioNet (E)", "FB15k-237 (E, R)", "CoDEx-M (E, R)"]
-    sota = [43.6, 52.5, 78.9, 30.4, 37.1]
+    sota = [43.6, 52.5, 78.9, 31.3, 37.1]
     ultra = [46.6, 55.6, 77.7, 67.1, 68.4]
 
     fig, ax = plt.subplots()
@@ -493,20 +493,20 @@ def main():
     # ppr_vs_sota_perf("(E)")
     # ppr_vs_sota_perf("(E, R)")
     # ppr_vs_sota_perf("Transductive")
-    # ppr_vs_sota_perf("New")
+    ppr_vs_sota_perf("New")
 
     # generated_delta_spd_vs_ppr()
     # generated_ppr_vs_size()
 
     # compare_old_perf()
-    # ultra_vs_sota_perf()
+    ultra_vs_sota_perf()
 
     # plot_old_vs_new_metrics("PPR")
     # plot_old_vs_new_metrics("SPD")
 
     # parent_vs_ind_ppr_change()
 
-    plot_rsch_stmt_fig()
+    # plot_rsch_stmt_fig()
 
 
 if __name__ == "__main__":

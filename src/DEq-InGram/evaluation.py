@@ -3,7 +3,7 @@ from utils import get_rank, get_metrics
 from tqdm import tqdm
 
 
-def evaluate_triplet(triplet, target, my_model, emb_ent, emb_rel, full_graph_neg = False):
+def evaluate_triplet(triplet, target, my_model, emb_ent, emb_rel, full_graph_neg = True):
     """
     Evaluate a the ranks of a single triplet against negative samples.
 
@@ -22,28 +22,28 @@ def evaluate_triplet(triplet, target, my_model, emb_ent, emb_rel, full_graph_neg
             head_scores = my_model.score(emb_ent, emb_rel, head_corrupt)
         head_filters = target.filter_dict[('_', int(triplet[0,1].item()), int(triplet[0,2].item()))]
         head_rank = get_rank(triplet, head_scores, head_filters, target = 0)
-    else:
-        ### MODIFY: Random sample 50 corrupt heads instead of all ###
-        head_corrupt = triplet.repeat(51, 3)   # 51 because 50 + 1 (for the original triplet)
-        # head_filters gives us the other positive triplets with the same relation and tail
-        head_filters = target.filter_dict[('_', int(triplet[0,1].item()), int(triplet[0,2].item()))]
-        # Sample 50 corrupt heads that we know are not in the filter
-        neg_heads_all = torch.tensor(list(set(range(target.num_ent)) - set(head_filters)))
-        neg_heads_sampled_ids = torch.randint(low=0, high = len(neg_heads_all)-1, size = (50,))
-        head_corrupt[1:,0] = neg_heads_all[neg_heads_sampled_ids]
-        # Compute the score. Compute multiple scores and then average if emb_ent and emb_rel are lists
-        if isinstance(emb_ent, list):
-            head_scores_51 = torch.stack([my_model.score(ee, er, head_corrupt) for ee, er in zip(emb_ent, emb_rel)]).mean(dim = 0)
-        else:
-            head_scores_51 = my_model.score(emb_ent, emb_rel, head_corrupt)
+    # else:
+    #     ### MODIFY: Random sample 50 corrupt heads instead of all ###
+    #     head_corrupt = triplet.repeat(51, 3)   # 51 because 50 + 1 (for the original triplet)
+    #     # head_filters gives us the other positive triplets with the same relation and tail
+    #     head_filters = target.filter_dict[('_', int(triplet[0,1].item()), int(triplet[0,2].item()))]
+    #     # Sample 50 corrupt heads that we know are not in the filter
+    #     neg_heads_all = torch.tensor(list(set(range(target.num_ent)) - set(head_filters)))
+    #     neg_heads_sampled_ids = torch.randint(low=0, high = len(neg_heads_all)-1, size = (50,))
+    #     head_corrupt[1:,0] = neg_heads_all[neg_heads_sampled_ids]
+    #     # Compute the score. Compute multiple scores and then average if emb_ent and emb_rel are lists
+    #     if isinstance(emb_ent, list):
+    #         head_scores_51 = torch.stack([my_model.score(ee, er, head_corrupt) for ee, er in zip(emb_ent, emb_rel)]).mean(dim = 0)
+    #     else:
+    #         head_scores_51 = my_model.score(emb_ent, emb_rel, head_corrupt)
         
-        # The original head_scores has score for every head, and get_rank() can only work with that
-        # So to work around this, create a head_scores tensor with the same length as the number of entities
-        # And for the original head and those sampled entities, fill in the scores from head_scores_51
-        # For the rest of the entities, fill in a score of original head score - 1, that is, head_scores_51[0] - 1
-        head_scores = torch.ones(target.num_ent).cuda() * (head_scores_51[0] - 1)
-        head_scores[head_corrupt[:,0]] = head_scores_51
-        head_rank = get_rank(triplet, head_scores, head_filters, target = 0)
+    #     # The original head_scores has score for every head, and get_rank() can only work with that
+    #     # So to work around this, create a head_scores tensor with the same length as the number of entities
+    #     # And for the original head and those sampled entities, fill in the scores from head_scores_51
+    #     # For the rest of the entities, fill in a score of original head score - 1, that is, head_scores_51[0] - 1
+    #     head_scores = torch.ones(target.num_ent).cuda() * (head_scores_51[0] - 1)
+    #     head_scores[head_corrupt[:,0]] = head_scores_51
+    #     head_rank = get_rank(triplet, head_scores, head_filters, target = 0)
 
     if full_graph_neg:
         # Use full graph negative sampling, i.e., the original setting
@@ -56,23 +56,23 @@ def evaluate_triplet(triplet, target, my_model, emb_ent, emb_rel, full_graph_neg
             tail_scores = my_model.score(emb_ent, emb_rel, tail_corrupt)
         tail_filters = target.filter_dict[(int(triplet[0,0].item()), int(triplet[0,1].item()), '_')]
         tail_rank = get_rank(triplet, tail_scores, tail_filters, target = 2)
-    else:
-        ### MODIFY: Random sample 50 corrupt tails instead of all ###
-        tail_corrupt = triplet.repeat(51, 3)
-        tail_filters = target.filter_dict[(int(triplet[0,0].item()), int(triplet[0,1].item()), '_')]
-        neg_tails_all = torch.tensor(list(set(range(target.num_ent)) - set(tail_filters)))
-        neg_tails_sampled_ids = torch.randint(low=0, high = len(neg_tails_all)-1, size = (50,))
-        tail_corrupt[1:,2] = neg_tails_all[neg_tails_sampled_ids]
+    # else:
+    #     ### MODIFY: Random sample 50 corrupt tails instead of all ###
+    #     tail_corrupt = triplet.repeat(51, 3)
+    #     tail_filters = target.filter_dict[(int(triplet[0,0].item()), int(triplet[0,1].item()), '_')]
+    #     neg_tails_all = torch.tensor(list(set(range(target.num_ent)) - set(tail_filters)))
+    #     neg_tails_sampled_ids = torch.randint(low=0, high = len(neg_tails_all)-1, size = (50,))
+    #     tail_corrupt[1:,2] = neg_tails_all[neg_tails_sampled_ids]
 
-        # Compute the score. Compute multiple scores and then average if emb_ent and emb_rel are lists
-        if isinstance(emb_ent, list):
-            tail_scores_51 = torch.stack([my_model.score(ee, er, tail_corrupt) for ee, er in zip(emb_ent, emb_rel)]).mean(dim = 0)
-        else:
-            tail_scores_51 = my_model.score(emb_ent, emb_rel, tail_corrupt)
+    #     # Compute the score. Compute multiple scores and then average if emb_ent and emb_rel are lists
+    #     if isinstance(emb_ent, list):
+    #         tail_scores_51 = torch.stack([my_model.score(ee, er, tail_corrupt) for ee, er in zip(emb_ent, emb_rel)]).mean(dim = 0)
+    #     else:
+    #         tail_scores_51 = my_model.score(emb_ent, emb_rel, tail_corrupt)
 
-        tail_scores = torch.ones(target.num_ent).cuda() * (tail_scores_51[0] - 1)
-        tail_scores[tail_corrupt[:,2]] = tail_scores_51
-        tail_rank = get_rank(triplet, tail_scores, tail_filters, target = 2)
+    #     tail_scores = torch.ones(target.num_ent).cuda() * (tail_scores_51[0] - 1)
+    #     tail_scores[tail_corrupt[:,2]] = tail_scores_51
+    #     tail_rank = get_rank(triplet, tail_scores, tail_filters, target = 2)
 
     ### MODIFY: Random sample 50 corrupt relations###
     rel_corrupt = triplet.repeat(51, 3)
@@ -94,33 +94,33 @@ def evaluate_triplet(triplet, target, my_model, emb_ent, emb_rel, full_graph_neg
     if full_graph_neg:
         # If in full graph mode, we don't compute dual metrics. Return dummy values.
         dual_rank = 50
-    else:
-        ### MODIFY: Dual sampling loss, 12 negative heads + 12 negative tails + 26 negative relations ###
-        # Use the contents in head_corrupt, tail_corrupt, and rel_corrupt to create the 50 negative triplets
-        # The first 12 are negative heads, the next 12 are negative tails, and the last 26 are negative relations
-        # Compute the rank against first 12 negative heads
-        head_corrupt_13 = head_corrupt[:13]
-        head_scores_13 = head_scores_51[:13]
-        head_scores_dual = torch.ones(target.num_ent).cuda() * (head_scores_13[0] - 1)
-        head_scores_dual[head_corrupt_13[:,0]] = head_scores_13
-        head_rank_13 = get_rank(triplet, head_scores_dual, head_filters, target = 0)
-        head_rank_dual = head_rank_13 - 1   # This counts how many negative heads are ranked higher than the original head
-        # Compute the rank against next 12 negative tails
-        tail_corrupt_13 = tail_corrupt[:13]
-        tail_scores_13 = tail_scores_51[:13]
-        tail_scores_dual = torch.ones(target.num_ent).cuda() * (tail_scores_13[0] - 1)
-        tail_scores_dual[tail_corrupt_13[:,2]] = tail_scores_13
-        tail_rank_13 = get_rank(triplet, tail_scores_dual, tail_filters, target = 2)
-        tail_rank_dual = tail_rank_13 - 1   # This counts how many negative tails are ranked higher than the original tail
-        # Compute the rank against last 26 negative relations
-        rel_corrupt_27 = rel_corrupt[:27]
-        rel_scores_27 = rel_scores_51[:27]
-        rel_scores_dual = torch.ones(target.num_rel).cuda() * (rel_scores_27[0] - 1)
-        rel_scores_dual[rel_corrupt_27[:,1]] = rel_scores_27
-        rel_rank_27 = get_rank(triplet, rel_scores_dual, rel_filters, target = 1)
-        rel_rank_dual = rel_rank_27 - 1   # This counts how many negative relations are ranked higher than the original relation
-        # Compute the final mixed rank
-        dual_rank = head_rank_dual + tail_rank_dual + rel_rank_dual + 1
+    # else:
+    #     ### MODIFY: Dual sampling loss, 12 negative heads + 12 negative tails + 26 negative relations ###
+    #     # Use the contents in head_corrupt, tail_corrupt, and rel_corrupt to create the 50 negative triplets
+    #     # The first 12 are negative heads, the next 12 are negative tails, and the last 26 are negative relations
+    #     # Compute the rank against first 12 negative heads
+    #     head_corrupt_13 = head_corrupt[:13]
+    #     head_scores_13 = head_scores_51[:13]
+    #     head_scores_dual = torch.ones(target.num_ent).cuda() * (head_scores_13[0] - 1)
+    #     head_scores_dual[head_corrupt_13[:,0]] = head_scores_13
+    #     head_rank_13 = get_rank(triplet, head_scores_dual, head_filters, target = 0)
+    #     head_rank_dual = head_rank_13 - 1   # This counts how many negative heads are ranked higher than the original head
+    #     # Compute the rank against next 12 negative tails
+    #     tail_corrupt_13 = tail_corrupt[:13]
+    #     tail_scores_13 = tail_scores_51[:13]
+    #     tail_scores_dual = torch.ones(target.num_ent).cuda() * (tail_scores_13[0] - 1)
+    #     tail_scores_dual[tail_corrupt_13[:,2]] = tail_scores_13
+    #     tail_rank_13 = get_rank(triplet, tail_scores_dual, tail_filters, target = 2)
+    #     tail_rank_dual = tail_rank_13 - 1   # This counts how many negative tails are ranked higher than the original tail
+    #     # Compute the rank against last 26 negative relations
+    #     rel_corrupt_27 = rel_corrupt[:27]
+    #     rel_scores_27 = rel_scores_51[:27]
+    #     rel_scores_dual = torch.ones(target.num_rel).cuda() * (rel_scores_27[0] - 1)
+    #     rel_scores_dual[rel_corrupt_27[:,1]] = rel_scores_27
+    #     rel_rank_27 = get_rank(triplet, rel_scores_dual, rel_filters, target = 1)
+    #     rel_rank_dual = rel_rank_27 - 1   # This counts how many negative relations are ranked higher than the original relation
+    #     # Compute the final mixed rank
+    #     dual_rank = head_rank_dual + tail_rank_dual + rel_rank_dual + 1
 
     return head_rank, tail_rank, rel_rank, dual_rank
 
@@ -174,7 +174,7 @@ def evaluate(my_model, target, epoch, init_emb_ent, init_emb_rel, relation_tripl
         }
     
 
-def evaluate_mc(my_model, target, init_emb_ent_samples, init_emb_rel_samples, relation_triplets_samples, full_graph_neg = False):
+def evaluate_mc(my_model, target, init_emb_ent_samples, init_emb_rel_samples, relation_triplets_samples, full_graph_neg = True):
     """
     Evaluate using multiple Monte Carlo samples of the embeddings.
     """
