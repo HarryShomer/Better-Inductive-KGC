@@ -8,7 +8,9 @@ Official code for the paper ["Towards Better Benchmark Datasets for Inductive Kn
 Please see [install.md](./install.md) for how to install the code and the proper package requirements. We note that some methods, like ULTRA and NodePiece, require their own special environment.
 
 
-## Data
+## Data 
+
+**NOTE**: Currently, the entity IDs aren't guranteed to map to the corresponding ID in the original dataset. This has no effect on the results of any of the methods used in the paper. This will have an effect if you want to map the entities back to their original natural language description.
 
 All the data can be found in the `new_data` folder. Each new dataset is further categorized into their own folder (e.g., `new_data/wn18rr_E`). The data is split into the following files:
 - `train_graph`: Contain the triples used during training

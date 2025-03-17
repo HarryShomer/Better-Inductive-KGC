@@ -238,6 +238,7 @@ def cluster_data(args, data):
                 cluster_edges[n].append((e[0], r, e[1]))
                 cluster_rels[n].add(r)
 
+
     if args.print_candidates:
         print("\nResults:\n-------")
         for n in range(num_clusters):
@@ -367,6 +368,7 @@ def get_new_data(args):
 
     ### Convert IDs to original names b4 saving
     ent2name, rel2name = data.entid_2_name, data.relid_2_name
+
     new_edges = []
     for e in fdata[f'train_graph']:
         new_edges.append((ent2name[e[0]], rel2name[e[1]], ent2name[e[2]]))
